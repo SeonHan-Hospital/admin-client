@@ -1,14 +1,9 @@
-import React, { useState } from "react";
+import React, { useCallback, useState } from "react";
 import styled from "styled-components";
 import { NAV_HEIGHT } from "../../styles/constants";
 import theme from "../../styles/theme";
-// import Icon__user from './icon__user.svg';
-// import {useLogout, useSession} from '../../hooks/session';
-// import Typography from '../Typography/Typography';
+import Icon__user from "./icon__user.svg";
 import { useNavigate } from "react-router-dom";
-// import {HeaderModal} from '../Modal/HeaderModal';
-// import {useRecoilState} from 'recoil';
-// import {internalAdminState} from '../../stores/room';
 
 export interface Props {
   category?: string;
@@ -16,57 +11,33 @@ export interface Props {
 }
 
 export const GNB = ({ category, page }: Props) => {
-  // const {hasSession, user} = useSession();
-  // const logout = useLogout();
   const [isOpen, SetIsOpen] = useState<boolean>(false);
-  const [modifyForm, setModifyForm] = React.useState<boolean>(false);
-  // const navigate = useNavigate();
-  // const [internalAdmin, setInternalAdmin] = useRecoilState(internalAdminState);
+  const navigate = useNavigate();
 
-  // const handleConfirm = React.useCallback(() => {
-  //   setModifyForm(false);
-  // }, []);
-
-  // useEffect(() => {
-  //   if (!hasSession) {
-  //     navigate('/signin');
-  //   }
-  // }, [hasSession, navigate]);
+  const handleLogout = useCallback(() => {
+    navigate("/login");
+  }, [navigate]);
 
   return (
     <Root>
       <Container>
-        <div>
+        <BreadCrumb>
           {category} <span>/ {page}</span>
-        </div>
+        </BreadCrumb>
         <RightWrapper>
-          {/* {hasSession && (
+          {
             <>
-              {category === '고객상세' && (
-                <Info>
-                  <InfoList>
-                    <InfoDetail>본사 담당자: {internalAdmin?.name || '미배정'}</InfoDetail>
-                    <InfoDetail>연락처: 1644-3670 (3번 연결)</InfoDetail>
-                    <InfoDetail>이메일: mubo_cs@duse.co.kr</InfoDetail>
-                  </InfoList>
-                </Info>
-              )}
-
               <UserIcon src={Icon__user} alt="유저아이콘" />
-              <div style={{cursor: 'pointer'}} onClick={() => SetIsOpen(!isOpen)}>
-                {user && user.name}
-              </div>
+              <UserBtn onClick={() => SetIsOpen(!isOpen)}>관리자</UserBtn>
             </>
-          )} */}
+          }
         </RightWrapper>
       </Container>
       {isOpen && (
         <UserModal>
-          <div onClick={() => setModifyForm(true)}>정보변경</div>
-          <Logout>로그아웃</Logout>
+          <Logout onClick={handleLogout}>로그아웃</Logout>
         </UserModal>
       )}
-      {/* {modifyForm && <HeaderModal content={user} onClose={handleConfirm} />} */}
     </Root>
   );
 };
@@ -87,17 +58,25 @@ const Container = styled.div`
   align-items: center;
 `;
 
-// const BreadCrumb = styled(Typography)`
-//   span {
-//     color: ${theme.palette.border};
-//     font-size: 16px;
-//     line-height: 20px;
-//   }
-// `;
+const BreadCrumb = styled.div`
+  span {
+    color: ${theme.palette.border};
+    font-size: 16px;
+    line-height: 20px;
+  }
+`;
 
-// const UserIcon = styled.img`
-//   margin-right: 8px;
-// `;
+const UserIcon = styled.img`
+  margin-right: 8px;
+`;
+
+const UserBtn = styled.div`
+  -webkit-user-select: none;
+  -moz-user-select: none;
+  -ms-user-select: none;
+  user-select: none;
+  cursor: pointer;
+`;
 
 const UserModal = styled.div`
   display: flex;
@@ -124,8 +103,12 @@ const RightWrapper = styled.div`
 `;
 
 const Logout = styled.div`
+  -webkit-user-select: none;
+  -moz-user-select: none;
+  -ms-user-select: none;
+  user-select: none;
   margin-top: 6px;
-  color: ${({ theme }) => theme.palette.bl01};
+  color: ${theme.palette.black};
 `;
 
 // const Info = styled.ul`
