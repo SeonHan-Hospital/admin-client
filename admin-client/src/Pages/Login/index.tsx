@@ -15,7 +15,7 @@ export const Login = () => {
 
   // login function
   const handleLogin = useCallback(() => {
-    if (userId === "1" && password === "1") {
+    if (userId === "tjsgks1" && password === "tjsgks1") {
       navigate("/");
     }
   }, [userId, password, navigate]);
@@ -62,6 +62,8 @@ const LoginContainer = styled.div`
 
 const Logo = styled.div`
   font-size: 36px;
+  color: ${theme.palette.primary};
+  font-weight: bold;
   padding: 20px 0;
 `;
 
