@@ -1,7 +1,7 @@
 import React from "react";
 import { BrowserRouter, Route, Routes } from "react-router-dom";
 import { Login } from "./Pages/Login";
-import { QnA } from "./Pages/QnA";
+import { QnA } from "./Pages/QnA/QnA";
 
 function App() {
   return (

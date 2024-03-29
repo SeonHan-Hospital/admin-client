@@ -110,14 +110,3 @@ const Logout = styled.div`
   margin-top: 6px;
   color: ${theme.palette.black};
 `;
-
-// const Info = styled.ul`
-//   margin-right: 40px;
-//   font-size: 14px;
-// `;
-
-// const InfoList = styled.li``;
-
-// const InfoDetail = styled.strong`
-//   margin-left: 16px;
-// `;

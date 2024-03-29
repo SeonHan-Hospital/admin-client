@@ -61,7 +61,7 @@ const Container = styled.div`
 `;
 
 const Content = styled.div<{ hideSideMenu?: boolean }>`
-  margin-top: 30px;
+  /* margin-top: 10px; */
   padding-bottom: 30px;
   height: ${100 % -NAV_HEIGHT.lg}px; // height: 100%;
 `;
