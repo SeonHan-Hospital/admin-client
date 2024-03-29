@@ -62,7 +62,7 @@ export const Table = () => {
                               {item.answer_id.length}
                             </ButtonDetail>
                           ) : (
-                            <ButtonDetail color="red">0</ButtonDetail>
+                            <ButtonDetail color="red">답변 달기</ButtonDetail>
                           ),
                         delete: <ButtonDetail>삭제</ButtonDetail>,
                         modify: <ButtonDetail>수정</ButtonDetail>,

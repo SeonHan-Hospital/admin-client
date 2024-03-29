@@ -23,7 +23,8 @@ export const dummyQuestions = [
     id: 3,
     author: "asd",
     subject: "위치 문의",
-    content: "asdasdadsadasdsadasdasdasdasd",
+    content:
+      "asdasdadsadasdsadasdasdasdasdasdasdadsadasdsadasdasdasdasdasdasdadsadasdsadasdasdasdasdasdasdadsadasdsadasdasdasdasdasdasdadsadasdsadasdasdasdasdasdasdadsadasdsadasdasdasdasdasdasdadsadasdsadasdasdasdasdasdasdadsadasdsadasdasdasdasdasdasdadsadasdsadasdasdasdasd",
     QnA_number: 1,
     answer_id: [21],
     createdAt: "2021-03-22",
