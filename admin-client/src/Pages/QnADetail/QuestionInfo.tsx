@@ -1,37 +1,79 @@
 import styled from "styled-components";
 import theme from "../../styles/theme";
-import { dummyQuestions } from "../QnA/data";
+import React, { useCallback, useEffect, useRef } from "react";
+import { IQuestion } from "../QnA";
 
-export const QuestionInfo = () => {
+interface IProps {
+  questionDetail: IQuestion;
+  setQuestionDetail: React.Dispatch<React.SetStateAction<IQuestion>>;
+}
+
+export const QuestionInfo = ({ questionDetail, setQuestionDetail }: IProps) => {
+  const contentArea = useRef<any>();
+  const subjectArea = useRef<any>();
+
+  useEffect(() => {
+    contentArea.current.style.height = contentArea.current.scrollHeight + "px";
+    subjectArea.current.style.height = subjectArea.current.scrollHeight + "px";
+  }, []);
+
+  const handleContent = useCallback(
+    (e: React.ChangeEvent<HTMLTextAreaElement>) => {
+      contentArea.current.style.height = "auto"; //height 초기화
+      contentArea.current.style.height =
+        contentArea.current.scrollHeight + "px";
+      setQuestionDetail({ ...questionDetail, content: e.target.value });
+    },
+    [questionDetail, setQuestionDetail]
+  );
+
+  const handleSubject = useCallback(
+    (e: React.ChangeEvent<HTMLTextAreaElement>) => {
+      subjectArea.current.style.height = "auto"; //height 초기화
+      subjectArea.current.style.height =
+        subjectArea.current.scrollHeight + "px";
+      setQuestionDetail({ ...questionDetail, subject: e.target.value });
+    },
+    [questionDetail, setQuestionDetail]
+  );
+
   return (
     <Wrapper>
       <Row>
-        <RowTitle style={{ borderTopLeftRadius: "10px" }}>No</RowTitle>
-        <RowContent>{dummyQuestions[0].QnA_number}</RowContent>
+        <RowTitle>No</RowTitle>
+        <RowContent>{questionDetail.QnA_number}</RowContent>
       </Row>
       <Row>
         <RowTitle>작성자</RowTitle>
-        <RowContent>{dummyQuestions[0].author}</RowContent>
+        <RowContent>{questionDetail.author}</RowContent>
       </Row>
       <Row>
         <RowTitle>제목</RowTitle>
-        <RowContent>{dummyQuestions[0].subject}</RowContent>
+        <RowInput
+          value={questionDetail.subject}
+          onChange={handleSubject}
+          ref={subjectArea}
+        />
       </Row>
       <Row>
         <RowTitle>내용</RowTitle>
-        <RowContent>{dummyQuestions[0].content}</RowContent>
+        <RowInput
+          onChange={handleContent}
+          value={questionDetail.content}
+          ref={contentArea}
+        />
       </Row>
       <Row>
         <RowTitle>답변</RowTitle>
-        <RowContent>{dummyQuestions[1].answer_id.length}</RowContent>
+        <RowContent>{questionDetail.answer_id.length}</RowContent>
       </Row>
       <Row>
         <RowTitle>작성일</RowTitle>
-        <RowContent>{dummyQuestions[0].createdAt}</RowContent>
+        <RowContent>{questionDetail.createdAt}</RowContent>
       </Row>
       <Row last={true}>
-        <RowTitle style={{ borderBottomLeftRadius: "10px" }}>수정일</RowTitle>
-        <RowContent>{dummyQuestions[0].updatedAt}</RowContent>
+        <RowTitle>수정일</RowTitle>
+        <RowContent>{questionDetail.updatedAt}</RowContent>
       </Row>
     </Wrapper>
   );
@@ -39,8 +81,6 @@ export const QuestionInfo = () => {
 
 const Wrapper = styled.div`
   width: 80%;
-  border: 1px solid ${theme.palette.border};
-  border-radius: 10px;
   display: flex;
   flex-direction: column;
   color: #555;
@@ -48,10 +88,8 @@ const Wrapper = styled.div`
 
 const Row = styled.div<{ last?: boolean }>`
   display: flex;
-  /* justify-content: center; */
   align-items: center;
-  border-bottom: 1px solid ${theme.palette.border};
-  ${({ last }) => last && "border-bottom: none;"}
+  border-bottom: 1px solid #ececec;
   min-height: 50px;
 `;
 
@@ -73,5 +111,17 @@ const RowContent = styled.div`
   align-items: center;
   word-break: break-word;
   box-sizing: border-box;
-  border-left: 1px solid ${theme.palette.border};
+`;
+
+const RowInput = styled.textarea`
+  /* all: unset; */
+  display: flex;
+  resize: none;
+  padding: 10px;
+  font-size: 13px;
+  align-items: center;
+  word-break: break-word;
+  box-sizing: border-box;
+  max-height: 250px;
+  width: 80%;
 `;
