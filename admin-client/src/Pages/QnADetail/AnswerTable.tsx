@@ -44,7 +44,7 @@ export const AnswerTable = ({ memos, handleOnClick }: TableProps) => {
 
 const Block = styled.div`
   overflow-y: scroll;
-  max-height: 162px;
+  max-height: 25%;
   height: 100%;
   width: 100%;
 `;
