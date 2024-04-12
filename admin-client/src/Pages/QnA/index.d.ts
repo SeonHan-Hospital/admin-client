@@ -38,8 +38,8 @@ export interface IQuestion {
   content: string;
   QnA_number: number;
   answer_id: number[];
-  createdAt: string | number;
-  updatedAt: string | number;
+  createdAt: string;
+  updatedAt: string;
 }
 
 export interface ITableHeader {

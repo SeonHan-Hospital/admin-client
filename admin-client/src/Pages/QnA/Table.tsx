@@ -3,7 +3,9 @@ import theme from "../../styles/theme";
 import { Cell } from "./Cell";
 import { dummyQuestions, header } from "./data";
 import { IQuestion } from ".";
-import { useState } from "react";
+import { useEffect, useState } from "react";
+import { useGetQuestionList } from "../../hooks/api";
+import { dateHandler } from "../../utils/functions";
 
 interface ITableHeader {
   id?: string;
@@ -36,16 +38,42 @@ const TableHeader = ({ header }: { header: ITableHeader[] }) => {
 export const Table = () => {
   // eslint-disable-next-line @typescript-eslint/no-unused-vars
   const [values, setValues] = useState<IQuestion[]>(dummyQuestions);
-  const totalElement = 10;
-  const size = 20;
+  const [totalElement, setTotalElement] = useState(0);
+  // const totalElement = 10;
+  const size = 10;
   const number = 0;
+  const [questions, setQuestions] = useState<IQuestion[]>([]);
+
+  const [req, res] = useGetQuestionList();
+
+  useEffect(() => {
+    req({
+      page: 1,
+      limit: 10,
+      author: "",
+      content: "",
+      subject: "",
+    });
+  }, [req]);
+
+  useEffect(() => {
+    if (res.called && res.data) {
+      res.data.rows.map((el: IQuestion) => {
+        el.createdAt = dateHandler(el.createdAt);
+        el.updatedAt = dateHandler(el.updatedAt);
+        return 0;
+      });
+      setQuestions(res.data.rows.slice(0, 10));
+      setTotalElement(res.data.count);
+    }
+  }, [res.called, res.data]);
 
   return (
     <ListContainer>
       <ListBox>
         <Root>
           <TableHeader header={header} />
-          {values?.map((item, idx) => (
+          {questions?.map((item, idx) => (
             <Row key={idx}>
               {header.map((h: ITableHeader, index: number) => (
                 <Cell
@@ -56,14 +84,13 @@ export const Table = () => {
                 >
                   {h.id
                     ? {
-                        answer_id:
-                          item.answer_id.length > 0 ? (
-                            <ButtonDetail color="blue">
-                              {item.answer_id.length}
-                            </ButtonDetail>
-                          ) : (
-                            <ButtonDetail color="red">답변 달기</ButtonDetail>
-                          ),
+                        answer_id: item.answerId.length ? (
+                          <ButtonDetail color="blue">
+                            {item.answerId.length}
+                          </ButtonDetail>
+                        ) : (
+                          <ButtonDetail color="red">답변 달기</ButtonDetail>
+                        ),
                         delete: <ButtonDetail>삭제</ButtonDetail>,
                         modify: <ButtonDetail>수정</ButtonDetail>,
                       }[h.id] || item[h.id]
