@@ -2,31 +2,56 @@ import styled from "styled-components";
 import { Layout } from "../../Components/Layout";
 import theme from "../../styles/theme";
 import { QuestionInfo } from "./QuestionInfo";
-import { useMemo, useState } from "react";
-import { dummyAnswers, dummyQuestions } from "../QnA/data";
+import { useEffect, useMemo, useState } from "react";
+import { dummyAnswers } from "../QnA/data";
 import { IQuestion } from "../QnA";
 import { AnswerTable } from "./AnswerTable";
+import { useLocation } from "react-router-dom";
+import { useDetailQuestion } from "../../hooks/api";
+
+const INITIAL_VALUE: IQuestion = {
+  id: -1,
+  author: "",
+  subject: "",
+  content: "",
+  QnA_number: -1,
+  answerId: [],
+  createdAt: "",
+  updatedAt: "",
+};
 
 export const QnADetail = () => {
-  const [questionDetail, setQuestionDetail] = useState<IQuestion>(
-    dummyQuestions[0]
-  );
+  const location = useLocation();
+  const [req, res] = useDetailQuestion();
+  const [questionDetail, setQuestionDetail] =
+    useState<IQuestion>(INITIAL_VALUE);
+  const [values, setValues] = useState<IQuestion>(INITIAL_VALUE);
   const isActive = useMemo(
     () =>
-      questionDetail.content !== dummyQuestions[0].content ||
-      questionDetail.subject !== dummyQuestions[0].subject,
-    [questionDetail]
+      questionDetail.content !== values.content ||
+      questionDetail.subject !== values.subject,
+    [questionDetail, values]
   );
+
+  useEffect(() => {
+    if (location.state) {
+      req(location.state.id);
+    }
+  }, [location, req]);
+
+  useEffect(() => {
+    if (res.called && res.data) {
+      setQuestionDetail(res.data);
+      setValues(res.data);
+    }
+  }, [res]);
 
   return (
     <Layout category="QnA" page="QnA관리">
       <Wrapper>
         <QuestionInfoContainer>
           <FieldTitle>Question</FieldTitle>
-          <QuestionInfo
-            setQuestionDetail={setQuestionDetail}
-            questionDetail={questionDetail}
-          />
+          <QuestionInfo setQuestionDetail={setValues} questionDetail={values} />
           <ButtonContainer>
             <LoginButton isActive={isActive}>수정</LoginButton>
           </ButtonContainer>

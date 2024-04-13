@@ -41,7 +41,9 @@ export const QuestionInfo = ({ questionDetail, setQuestionDetail }: IProps) => {
     <Wrapper>
       <Row>
         <RowTitle>No</RowTitle>
-        <RowContent>{questionDetail.QnA_number}</RowContent>
+        <RowContent>
+          {questionDetail.QnA_number > 0 ? questionDetail.QnA_number : ""}
+        </RowContent>
       </Row>
       <Row>
         <RowTitle>작성자</RowTitle>
@@ -65,7 +67,7 @@ export const QuestionInfo = ({ questionDetail, setQuestionDetail }: IProps) => {
       </Row>
       <Row>
         <RowTitle>답변</RowTitle>
-        <RowContent>{questionDetail.answer_id.length}</RowContent>
+        <RowContent>{questionDetail.answerId.length}</RowContent>
       </Row>
       <Row>
         <RowTitle>작성일</RowTitle>

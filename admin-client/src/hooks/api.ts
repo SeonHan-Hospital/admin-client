@@ -16,3 +16,34 @@ export const useGetQuestionList = () => {
 
   return [run, response] as [typeof run, typeof response];
 };
+
+export const useDeleteQuestion = () => {
+  const [request, response] = useAxios();
+
+  const run = useCallback(
+    (id: number) => {
+      return request({
+        url: `/question/${id}`,
+        method: "DELETE",
+      });
+    },
+    [request]
+  );
+
+  return [run, response] as [typeof run, typeof response];
+};
+
+export const useDetailQuestion = () => {
+  const [request, response] = useAxios();
+
+  const run = useCallback(
+    (id: number) => {
+      return request({
+        url: `/question/${id}`,
+      });
+    },
+    [request]
+  );
+
+  return [run, response] as [typeof run, typeof response];
+};

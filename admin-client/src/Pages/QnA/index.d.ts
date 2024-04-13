@@ -37,7 +37,7 @@ export interface IQuestion {
   subject: string;
   content: string;
   QnA_number: number;
-  answer_id: number[];
+  answerId: number[];
   createdAt: string;
   updatedAt: string;
 }

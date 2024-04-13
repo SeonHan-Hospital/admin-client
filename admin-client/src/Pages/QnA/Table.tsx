@@ -1,11 +1,8 @@
 import styled from "styled-components";
 import theme from "../../styles/theme";
 import { Cell } from "./Cell";
-import { dummyQuestions, header } from "./data";
+import { header } from "./data";
 import { IQuestion } from ".";
-import { useEffect, useState } from "react";
-import { useGetQuestionList } from "../../hooks/api";
-import { dateHandler } from "../../utils/functions";
 
 interface ITableHeader {
   id?: string;
@@ -35,45 +32,29 @@ const TableHeader = ({ header }: { header: ITableHeader[] }) => {
   );
 };
 
-export const Table = () => {
-  // eslint-disable-next-line @typescript-eslint/no-unused-vars
-  const [values, setValues] = useState<IQuestion[]>(dummyQuestions);
-  const [totalElement, setTotalElement] = useState(0);
-  // const totalElement = 10;
-  const size = 10;
-  const number = 0;
-  const [questions, setQuestions] = useState<IQuestion[]>([]);
+interface ITableProps {
+  tableData: IQuestion[];
+  totalElement: number;
+  size: number;
+  number: number;
+  handleDelete: (id: number) => void;
+  handleNavigate: (id: number) => void;
+}
 
-  const [req, res] = useGetQuestionList();
-
-  useEffect(() => {
-    req({
-      page: 1,
-      limit: 10,
-      author: "",
-      content: "",
-      subject: "",
-    });
-  }, [req]);
-
-  useEffect(() => {
-    if (res.called && res.data) {
-      res.data.rows.map((el: IQuestion) => {
-        el.createdAt = dateHandler(el.createdAt);
-        el.updatedAt = dateHandler(el.updatedAt);
-        return 0;
-      });
-      setQuestions(res.data.rows.slice(0, 10));
-      setTotalElement(res.data.count);
-    }
-  }, [res.called, res.data]);
-
+export const Table = ({
+  tableData,
+  totalElement,
+  size,
+  number,
+  handleDelete,
+  handleNavigate,
+}: ITableProps) => {
   return (
     <ListContainer>
       <ListBox>
         <Root>
           <TableHeader header={header} />
-          {questions?.map((item, idx) => (
+          {tableData?.map((item, idx) => (
             <Row key={idx}>
               {header.map((h: ITableHeader, index: number) => (
                 <Cell
@@ -84,15 +65,28 @@ export const Table = () => {
                 >
                   {h.id
                     ? {
-                        answer_id: item.answerId.length ? (
+                        answerId: item.answerId.length ? (
                           <ButtonDetail color="blue">
                             {item.answerId.length}
                           </ButtonDetail>
                         ) : (
-                          <ButtonDetail color="red">답변 달기</ButtonDetail>
+                          <ButtonDetail
+                            color="red"
+                            onClick={() => handleNavigate(item.id)}
+                          >
+                            답변 달기
+                          </ButtonDetail>
                         ),
-                        delete: <ButtonDetail>삭제</ButtonDetail>,
-                        modify: <ButtonDetail>수정</ButtonDetail>,
+                        delete: (
+                          <ButtonDetail onClick={() => handleDelete(item.id)}>
+                            삭제
+                          </ButtonDetail>
+                        ),
+                        modify: (
+                          <ButtonDetail onClick={() => handleNavigate(item.id)}>
+                            수정
+                          </ButtonDetail>
+                        ),
                       }[h.id] || item[h.id]
                     : totalElement - idx - size * number}
                 </Cell>
