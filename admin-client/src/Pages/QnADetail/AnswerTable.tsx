@@ -5,9 +5,14 @@ import { dateHandler } from "../../utils/functions";
 export interface TableProps {
   memos: IAnswer[];
   handleOnClick: (memo: IAnswer) => void;
+  handleDelete: (id: number) => void;
 }
 
-export const AnswerTable = ({ memos, handleOnClick }: TableProps) => {
+export const AnswerTable = ({
+  memos,
+  handleOnClick,
+  handleDelete,
+}: TableProps) => {
   return (
     <Block>
       <TableStyles>
@@ -18,6 +23,7 @@ export const AnswerTable = ({ memos, handleOnClick }: TableProps) => {
             <th>답변요약</th>
             <th>작성자</th>
             <th>답변전체</th>
+            <th>답변삭제</th>
           </tr>
         </thead>
         <tbody>
@@ -28,6 +34,7 @@ export const AnswerTable = ({ memos, handleOnClick }: TableProps) => {
               <td>{memo.content}</td>
               <td>{memo.author}</td>
               <td onClick={() => handleOnClick(memo)}>전체보기</td>
+              <td onClick={() => handleDelete(memo.id)}>삭제</td>
             </tr>
           ))}
         </tbody>
@@ -68,7 +75,7 @@ const TableStyles = styled.table`
     display: flex;
     justify-content: center;
     font-weight: 400;
-    flex: 1;
+    width: 20%;
   }
 
   tr {
@@ -77,9 +84,21 @@ const TableStyles = styled.table`
     background-color: #fff;
     border-bottom: 1px solid #ececec;
     align-items: center;
+    & > td:nth-child(5) {
+      text-decoration: underline;
+      cursor: pointer;
+      width: 10%;
+    }
     & > td:last-child {
       text-decoration: underline;
       cursor: pointer;
+      width: 10%;
+    }
+    & > th:nth-child(5) {
+      width: 10%;
+    }
+    & > th:last-child {
+      width: 10%;
     }
   }
   td {

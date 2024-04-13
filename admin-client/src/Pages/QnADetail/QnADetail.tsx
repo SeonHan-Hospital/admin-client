@@ -7,6 +7,7 @@ import { IAnswer, IQuestion } from "../QnA";
 import { AnswerTable } from "./AnswerTable";
 import { useLocation } from "react-router-dom";
 import {
+  useDeleteAnswer,
   useDetailQuestion,
   useGetAnswerList,
   useModifyQuestion,
@@ -29,6 +30,7 @@ export const QnADetail = () => {
   const [questionDetail, setQuestionDetail] =
     useState<IQuestion>(INITIAL_VALUE);
   const [values, setValues] = useState<IQuestion>(INITIAL_VALUE);
+  const [ansDetailValue, setAnsDetailValue] = useState("");
   const isActive = useMemo(
     () =>
       questionDetail.content !== values.content ||
@@ -38,6 +40,8 @@ export const QnADetail = () => {
   const [memoList, setMemoList] = useState<IAnswer[]>([]);
   const [answerReq, answerRes] = useGetAnswerList();
   const [questionModifyReq, questionModifyRes] = useModifyQuestion();
+  const [targetAnsId, setTargetAnsId] = useState(-1);
+  const [deleteAnsReq, deleteAnsRes] = useDeleteAnswer();
 
   useEffect(() => {
     if (location.state) {
@@ -59,6 +63,23 @@ export const QnADetail = () => {
     }
   }, [res]);
 
+  const handleDeleteAns = useCallback(
+    (id: number) => {
+      // eslint-disable-next-line no-restricted-globals
+      if (confirm("답변을 삭제하시겠습니까?")) {
+        deleteAnsReq(id);
+      }
+    },
+    [deleteAnsReq]
+  );
+
+  useEffect(() => {
+    if (deleteAnsRes.called && !deleteAnsRes.loading) {
+      alert("삭제가 완료되었습니다.");
+      window.location.reload();
+    }
+  }, [deleteAnsRes]);
+
   const handleQuestionModify = useCallback(() => {
     // eslint-disable-next-line no-restricted-globals
     if (location.state && isActive && confirm("수정하시겠습니까?")) {
@@ -78,6 +99,18 @@ export const QnADetail = () => {
     }
   }, [questionModifyRes]);
 
+  const handleAnsDetailValue = useCallback(
+    (e: React.ChangeEvent<HTMLTextAreaElement>) => {
+      setAnsDetailValue(e.target.value);
+    },
+    []
+  );
+
+  const handleAnsDetail = useCallback((memo: IAnswer) => {
+    setAnsDetailValue(memo.content);
+    setTargetAnsId(memo.id);
+  }, []);
+
   return (
     <Layout category="QnA" page="QnA관리">
       <Wrapper>
@@ -95,10 +128,17 @@ export const QnADetail = () => {
         </QuestionInfoContainer>
         <AnswerInfoContainer>
           <FieldTitle style={{ width: "100%" }}>Answers</FieldTitle>
-          <AnswerTable memos={memoList} handleOnClick={() => {}} />
+          <AnswerTable
+            handleDelete={handleDeleteAns}
+            memos={memoList}
+            handleOnClick={handleAnsDetail}
+          />
           <BorderLine />
           <FieldTitle style={{ width: "100%" }}>Answer Detail</FieldTitle>
-          <AnswerText />
+          <AnswerText
+            value={ansDetailValue}
+            onChange={(e) => handleAnsDetailValue(e)}
+          />
           <AnswerButtonContainer>
             <AnswerButton style={{ marginRight: "20px" }} isActive={false}>
               수정

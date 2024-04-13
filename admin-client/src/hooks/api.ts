@@ -83,3 +83,19 @@ export const useGetAnswerList = () => {
 
   return [run, response] as [typeof run, typeof response];
 };
+
+export const useDeleteAnswer = () => {
+  const [request, response] = useAxios();
+
+  const run = useCallback(
+    (id: number) => {
+      return request({
+        url: `/answer/${id}`,
+        method: "DELETE",
+      });
+    },
+    [request]
+  );
+
+  return [run, response] as [typeof run, typeof response];
+};
