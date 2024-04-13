@@ -12,6 +12,7 @@ import {
   useGetAnswerList,
   useModifyAnswer,
   useModifyQuestion,
+  usePostAnswer,
 } from "../../hooks/api";
 
 const INITIAL_VALUE: IQuestion = {
@@ -27,29 +28,35 @@ const INITIAL_VALUE: IQuestion = {
 
 export const QnADetail = () => {
   const location = useLocation();
-  const [req, res] = useDetailQuestion();
   const [questionDetail, setQuestionDetail] =
     useState<IQuestion>(INITIAL_VALUE);
   const [values, setValues] = useState<IQuestion>(INITIAL_VALUE);
   const [ansDetailValue, setAnsDetailValue] = useState("");
+  const [targetAns, setTargetAns] = useState<IAnswer>();
+  const [memoList, setMemoList] = useState<IAnswer[]>([]);
+
+  const [req, res] = useDetailQuestion();
+  const [answerReq, answerRes] = useGetAnswerList();
+  const [questionModifyReq, questionModifyRes] = useModifyQuestion();
+  const [deleteAnsReq, deleteAnsRes] = useDeleteAnswer();
+  const [modifyAnsReq, modifyAnsRes] = useModifyAnswer();
+  const [postAnsReq, postAnsRes] = usePostAnswer();
+
   const isActive = useMemo(
     () =>
       questionDetail.content !== values.content ||
       questionDetail.subject !== values.subject,
     [questionDetail, values]
   );
-  const [memoList, setMemoList] = useState<IAnswer[]>([]);
-  const [answerReq, answerRes] = useGetAnswerList();
-  const [questionModifyReq, questionModifyRes] = useModifyQuestion();
-  const [targetAns, setTargetAns] = useState<IAnswer>();
-  const [deleteAnsReq, deleteAnsRes] = useDeleteAnswer();
-  const [modifyAnsReq, modifyAnsRes] = useModifyAnswer();
   const postAnswerActive = useMemo(
     () => ansDetailValue.length > 0,
     [ansDetailValue]
   );
   const modifyAnsActive = useMemo(
-    () => ansDetailValue !== targetAns?.content && ansDetailValue.length > 0,
+    () =>
+      !!targetAns &&
+      ansDetailValue !== targetAns?.content &&
+      ansDetailValue.length > 0,
     [ansDetailValue, targetAns]
   );
 
@@ -72,6 +79,24 @@ export const QnADetail = () => {
       setValues(res.data);
     }
   }, [res]);
+
+  const handlePostAns = useCallback(() => {
+    // eslint-disable-next-line no-restricted-globals
+    if (postAnswerActive && confirm("답변을 등록하시겠습니까?")) {
+      postAnsReq({
+        questionId: location.state.id,
+        author: "master",
+        content: ansDetailValue,
+      });
+    }
+  }, [postAnsReq, postAnswerActive, ansDetailValue, location]);
+
+  useEffect(() => {
+    if (postAnsRes.called && postAnsRes.data) {
+      alert("답변이 등록되었습니다.");
+      window.location.reload();
+    }
+  }, [postAnsRes]);
 
   const handleModifyAns = useCallback(
     (memo: IAnswer) => {
@@ -175,7 +200,9 @@ export const QnADetail = () => {
             >
               수정
             </AnswerButton>
-            <AnswerButton isActive={postAnswerActive}>등록</AnswerButton>
+            <AnswerButton isActive={postAnswerActive} onClick={handlePostAns}>
+              등록
+            </AnswerButton>
           </AnswerButtonContainer>
         </AnswerInfoContainer>
       </Wrapper>
@@ -204,6 +231,7 @@ const AnswerInfoContainer = styled.div`
   flex-direction: column;
   margin: 0 50px;
   align-items: center;
+  height: 80vh;
 `;
 
 const ButtonContainer = styled.div`
@@ -274,9 +302,9 @@ const AnswerText = styled.textarea`
 
 const AnswerButtonContainer = styled.div`
   width: 100%;
+  flex: 1;
   margin-top: 30px;
   display: flex;
   justify-content: end;
-  flex: 1;
   align-items: end;
 `;

@@ -1,7 +1,7 @@
 import { useCallback } from "react";
 import { useAxios } from "./axios";
 import { IGetQuestionParams, IModifyQuestionData } from ".";
-import { IAnswer } from "../Pages/QnA";
+import { IAnswer, IPostAnswerData } from "../Pages/QnA";
 
 export const useGetQuestionList = () => {
   const [request, response] = useAxios();
@@ -114,6 +114,23 @@ export const useModifyAnswer = () => {
           author: data.author,
           content: data.content,
         },
+      });
+    },
+    [request]
+  );
+
+  return [run, response] as [typeof run, typeof response];
+};
+
+export const usePostAnswer = () => {
+  const [request, response] = useAxios();
+
+  const run = useCallback(
+    (data: IPostAnswerData) => {
+      return request({
+        url: `/answer`,
+        method: "POST",
+        data: data,
       });
     },
     [request]

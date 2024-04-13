@@ -42,3 +42,9 @@ export interface IAnswer {
   createdAt: string;
   updatedAt: string;
 }
+
+export interface IPostAnswerData {
+  questionId: number;
+  author: string;
+  content: string;
+}

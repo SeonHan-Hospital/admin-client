@@ -45,8 +45,8 @@ export const AnswerTable = ({
 
 const Block = styled.div`
   overflow-y: scroll;
-  max-height: 25%;
-  height: 100%;
+  height: 25%;
+  /* max-height: 20%; */
   width: 100%;
 `;
 
