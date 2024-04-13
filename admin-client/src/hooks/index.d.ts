@@ -5,3 +5,10 @@ export interface IGetQuestionParams {
   subject: string;
   author: string;
 }
+
+export interface IModifyQuestionData {
+  id: number;
+  author: string;
+  subject: string;
+  content: string;
+}

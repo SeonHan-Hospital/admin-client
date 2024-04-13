@@ -1,6 +1,6 @@
 import { useCallback } from "react";
 import { useAxios } from "./axios";
-import { IGetQuestionParams } from ".";
+import { IGetQuestionParams, IModifyQuestionData } from ".";
 
 export const useGetQuestionList = () => {
   const [request, response] = useAxios();
@@ -40,6 +40,27 @@ export const useDetailQuestion = () => {
     (id: number) => {
       return request({
         url: `/question/${id}`,
+      });
+    },
+    [request]
+  );
+
+  return [run, response] as [typeof run, typeof response];
+};
+
+export const useModifyQuestion = () => {
+  const [request, response] = useAxios();
+
+  const run = useCallback(
+    (data: IModifyQuestionData) => {
+      return request({
+        url: `/question/${data.id}`,
+        method: "PUT",
+        data: {
+          author: data.author,
+          content: data.content,
+          subject: data.subject,
+        },
       });
     },
     [request]

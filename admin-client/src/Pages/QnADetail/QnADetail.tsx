@@ -2,12 +2,12 @@ import styled from "styled-components";
 import { Layout } from "../../Components/Layout";
 import theme from "../../styles/theme";
 import { QuestionInfo } from "./QuestionInfo";
-import { useEffect, useMemo, useState } from "react";
+import { useCallback, useEffect, useMemo, useState } from "react";
 import { dummyAnswers } from "../QnA/data";
 import { IQuestion } from "../QnA";
 import { AnswerTable } from "./AnswerTable";
 import { useLocation } from "react-router-dom";
-import { useDetailQuestion } from "../../hooks/api";
+import { useDetailQuestion, useModifyQuestion } from "../../hooks/api";
 
 const INITIAL_VALUE: IQuestion = {
   id: -1,
@@ -32,6 +32,7 @@ export const QnADetail = () => {
       questionDetail.subject !== values.subject,
     [questionDetail, values]
   );
+  const [questionModifyReq, questionModifyRes] = useModifyQuestion();
 
   useEffect(() => {
     if (location.state) {
@@ -46,6 +47,25 @@ export const QnADetail = () => {
     }
   }, [res]);
 
+  const handleQuestionModify = useCallback(() => {
+    // eslint-disable-next-line no-restricted-globals
+    if (location.state && isActive && confirm("수정하시겠습니까?")) {
+      questionModifyReq({
+        id: location.state.id,
+        subject: values.subject,
+        author: values.author,
+        content: values.content,
+      });
+    }
+  }, [questionModifyReq, values, location, isActive]);
+
+  useEffect(() => {
+    if (questionModifyRes.called && questionModifyRes.data) {
+      alert("수정이 완료되었습니다.");
+      window.location.reload();
+    }
+  }, [questionModifyRes]);
+
   return (
     <Layout category="QnA" page="QnA관리">
       <Wrapper>
@@ -53,7 +73,9 @@ export const QnADetail = () => {
           <FieldTitle>Question</FieldTitle>
           <QuestionInfo setQuestionDetail={setValues} questionDetail={values} />
           <ButtonContainer>
-            <LoginButton isActive={isActive}>수정</LoginButton>
+            <LoginButton isActive={isActive} onClick={handleQuestionModify}>
+              수정
+            </LoginButton>
           </ButtonContainer>
         </QuestionInfoContainer>
         <AnswerInfoContainer>
