@@ -68,3 +68,18 @@ export const useModifyQuestion = () => {
 
   return [run, response] as [typeof run, typeof response];
 };
+
+export const useGetAnswerList = () => {
+  const [request, response] = useAxios();
+
+  const run = useCallback(
+    (id: number) => {
+      return request({
+        url: `/answer?questionId=${id}&page=1&limit=10`,
+      });
+    },
+    [request]
+  );
+
+  return [run, response] as [typeof run, typeof response];
+};

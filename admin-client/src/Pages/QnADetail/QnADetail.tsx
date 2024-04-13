@@ -3,11 +3,14 @@ import { Layout } from "../../Components/Layout";
 import theme from "../../styles/theme";
 import { QuestionInfo } from "./QuestionInfo";
 import { useCallback, useEffect, useMemo, useState } from "react";
-import { dummyAnswers } from "../QnA/data";
-import { IQuestion } from "../QnA";
+import { IAnswer, IQuestion } from "../QnA";
 import { AnswerTable } from "./AnswerTable";
 import { useLocation } from "react-router-dom";
-import { useDetailQuestion, useModifyQuestion } from "../../hooks/api";
+import {
+  useDetailQuestion,
+  useGetAnswerList,
+  useModifyQuestion,
+} from "../../hooks/api";
 
 const INITIAL_VALUE: IQuestion = {
   id: -1,
@@ -32,13 +35,22 @@ export const QnADetail = () => {
       questionDetail.subject !== values.subject,
     [questionDetail, values]
   );
+  const [memoList, setMemoList] = useState<IAnswer[]>([]);
+  const [answerReq, answerRes] = useGetAnswerList();
   const [questionModifyReq, questionModifyRes] = useModifyQuestion();
 
   useEffect(() => {
     if (location.state) {
       req(location.state.id);
+      answerReq(location.state.id);
     }
-  }, [location, req]);
+  }, [location, req, answerReq]);
+
+  useEffect(() => {
+    if (answerRes.called && answerRes.data) {
+      setMemoList(answerRes.data.data);
+    }
+  }, [answerRes]);
 
   useEffect(() => {
     if (res.called && res.data) {
@@ -73,14 +85,17 @@ export const QnADetail = () => {
           <FieldTitle>Question</FieldTitle>
           <QuestionInfo setQuestionDetail={setValues} questionDetail={values} />
           <ButtonContainer>
-            <LoginButton isActive={isActive} onClick={handleQuestionModify}>
+            <LoginButton
+              isActive={isActive && location.state}
+              onClick={handleQuestionModify}
+            >
               수정
             </LoginButton>
           </ButtonContainer>
         </QuestionInfoContainer>
         <AnswerInfoContainer>
           <FieldTitle style={{ width: "100%" }}>Answers</FieldTitle>
-          <AnswerTable memos={dummyAnswers} handleOnClick={() => {}} />
+          <AnswerTable memos={memoList} handleOnClick={() => {}} />
           <BorderLine />
           <FieldTitle style={{ width: "100%" }}>Answer Detail</FieldTitle>
           <AnswerText />

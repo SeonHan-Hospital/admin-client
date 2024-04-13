@@ -2,6 +2,7 @@ import styled from "styled-components";
 import theme from "../../styles/theme";
 import React, { useCallback, useEffect, useRef } from "react";
 import { IQuestion } from "../QnA";
+import { dateHandler } from "../../utils/functions";
 
 interface IProps {
   questionDetail: IQuestion;
@@ -71,11 +72,15 @@ export const QuestionInfo = ({ questionDetail, setQuestionDetail }: IProps) => {
       </Row>
       <Row>
         <RowTitle>작성일</RowTitle>
-        <RowContent>{questionDetail.createdAt}</RowContent>
+        <RowContent>
+          {questionDetail.createdAt && dateHandler(questionDetail.createdAt)}
+        </RowContent>
       </Row>
       <Row last={true}>
         <RowTitle>수정일</RowTitle>
-        <RowContent>{questionDetail.updatedAt}</RowContent>
+        <RowContent>
+          {questionDetail.updatedAt && dateHandler(questionDetail.updatedAt)}
+        </RowContent>
       </Row>
     </Wrapper>
   );

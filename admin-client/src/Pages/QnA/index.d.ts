@@ -11,25 +11,6 @@ export interface ISearchBarProps {
   handleSearchValue: (e: React.ChangeEvent<HTMLInputElement>) => void;
 }
 
-export interface IAccount {
-  [index: string];
-  id: number;
-  email: string;
-  name: string;
-  mobile: string;
-  adminType: string;
-  fieldOffice?: string | null;
-  basicAddr?: string | null;
-  detailAddr?: string | null;
-  authorizeType: string;
-  status: boolean;
-  createdAt: number;
-  updatedAt: number;
-  deleted: boolean;
-  password?: string;
-  password2?: string;
-}
-
 export interface IQuestion {
   [index: string];
   id: number;
@@ -51,4 +32,13 @@ export interface ITableHeader {
   width?: number;
   wrapWidth?: number;
   align?: string;
+}
+
+export interface IAnswer {
+  id: number;
+  questionId: number;
+  author: string;
+  content: string;
+  createdAt: string;
+  updatedAt: string;
 }

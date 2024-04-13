@@ -1,16 +1,10 @@
 import styled from "styled-components";
-
-export interface Memo {
-  contents: string;
-  createdAt: string;
-  id: number;
-  modifiedAt: string;
-  modifiedBy: string;
-}
+import { IAnswer } from "../QnA";
+import { dateHandler } from "../../utils/functions";
 
 export interface TableProps {
-  memos: Memo[];
-  handleOnClick: (memo: Memo) => void;
+  memos: IAnswer[];
+  handleOnClick: (memo: IAnswer) => void;
 }
 
 export const AnswerTable = ({ memos, handleOnClick }: TableProps) => {
@@ -29,10 +23,10 @@ export const AnswerTable = ({ memos, handleOnClick }: TableProps) => {
         <tbody>
           {memos.map((memo, index) => (
             <tr key={index}>
-              <td>{memo.createdAt}</td>
-              <td>{memo.modifiedAt}</td>
-              <td>{memo.contents}</td>
-              <td>{memo.modifiedBy}</td>
+              <td>{dateHandler(memo.createdAt)}</td>
+              <td>{dateHandler(memo.updatedAt)}</td>
+              <td>{memo.content}</td>
+              <td>{memo.author}</td>
               <td onClick={() => handleOnClick(memo)}>전체보기</td>
             </tr>
           ))}

@@ -66,7 +66,10 @@ export const Table = ({
                   {h.id
                     ? {
                         answerId: item.answerId.length ? (
-                          <ButtonDetail color="blue">
+                          <ButtonDetail
+                            color="blue"
+                            onClick={() => handleNavigate(item.id)}
+                          >
                             {item.answerId.length}
                           </ButtonDetail>
                         ) : (
