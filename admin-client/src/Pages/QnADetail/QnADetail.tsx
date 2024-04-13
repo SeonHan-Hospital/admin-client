@@ -10,6 +10,7 @@ import {
   useDeleteAnswer,
   useDetailQuestion,
   useGetAnswerList,
+  useModifyAnswer,
   useModifyQuestion,
 } from "../../hooks/api";
 
@@ -40,8 +41,17 @@ export const QnADetail = () => {
   const [memoList, setMemoList] = useState<IAnswer[]>([]);
   const [answerReq, answerRes] = useGetAnswerList();
   const [questionModifyReq, questionModifyRes] = useModifyQuestion();
-  const [targetAnsId, setTargetAnsId] = useState(-1);
+  const [targetAns, setTargetAns] = useState<IAnswer>();
   const [deleteAnsReq, deleteAnsRes] = useDeleteAnswer();
+  const [modifyAnsReq, modifyAnsRes] = useModifyAnswer();
+  const postAnswerActive = useMemo(
+    () => ansDetailValue.length > 0,
+    [ansDetailValue]
+  );
+  const modifyAnsActive = useMemo(
+    () => ansDetailValue !== targetAns?.content && ansDetailValue.length > 0,
+    [ansDetailValue, targetAns]
+  );
 
   useEffect(() => {
     if (location.state) {
@@ -62,6 +72,22 @@ export const QnADetail = () => {
       setValues(res.data);
     }
   }, [res]);
+
+  const handleModifyAns = useCallback(
+    (memo: IAnswer) => {
+      // eslint-disable-next-line no-restricted-globals
+      if (modifyAnsActive && confirm("답변을 수정하시겠습니까?"))
+        modifyAnsReq({ ...memo, content: ansDetailValue });
+    },
+    [modifyAnsReq, modifyAnsActive, ansDetailValue]
+  );
+
+  useEffect(() => {
+    if (modifyAnsRes.called && modifyAnsRes.data) {
+      alert("수정이 완료되었습니다.");
+      window.location.reload();
+    }
+  }, [modifyAnsRes]);
 
   const handleDeleteAns = useCallback(
     (id: number) => {
@@ -108,7 +134,7 @@ export const QnADetail = () => {
 
   const handleAnsDetail = useCallback((memo: IAnswer) => {
     setAnsDetailValue(memo.content);
-    setTargetAnsId(memo.id);
+    setTargetAns(memo);
   }, []);
 
   return (
@@ -140,10 +166,16 @@ export const QnADetail = () => {
             onChange={(e) => handleAnsDetailValue(e)}
           />
           <AnswerButtonContainer>
-            <AnswerButton style={{ marginRight: "20px" }} isActive={false}>
+            <AnswerButton
+              style={{ marginRight: "20px" }}
+              isActive={modifyAnsActive}
+              onClick={() => {
+                if (targetAns) handleModifyAns(targetAns);
+              }}
+            >
               수정
             </AnswerButton>
-            <AnswerButton isActive={false}>등록</AnswerButton>
+            <AnswerButton isActive={postAnswerActive}>등록</AnswerButton>
           </AnswerButtonContainer>
         </AnswerInfoContainer>
       </Wrapper>

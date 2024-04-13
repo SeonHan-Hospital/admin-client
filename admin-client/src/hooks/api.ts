@@ -1,6 +1,7 @@
 import { useCallback } from "react";
 import { useAxios } from "./axios";
 import { IGetQuestionParams, IModifyQuestionData } from ".";
+import { IAnswer } from "../Pages/QnA";
 
 export const useGetQuestionList = () => {
   const [request, response] = useAxios();
@@ -92,6 +93,27 @@ export const useDeleteAnswer = () => {
       return request({
         url: `/answer/${id}`,
         method: "DELETE",
+      });
+    },
+    [request]
+  );
+
+  return [run, response] as [typeof run, typeof response];
+};
+
+export const useModifyAnswer = () => {
+  const [request, response] = useAxios();
+
+  const run = useCallback(
+    (data: IAnswer) => {
+      return request({
+        url: `/answer/${data.id}`,
+        method: "PUT",
+        data: {
+          questionId: data.questionId,
+          author: data.author,
+          content: data.content,
+        },
       });
     },
     [request]
