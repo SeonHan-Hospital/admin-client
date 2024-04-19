@@ -20,17 +20,20 @@ export const QnA = () => {
   const [req, res] = useGetQuestionList();
   const [deleteReq, deleteRes] = useDeleteQuestion();
   const navigate = useNavigate();
-  const [page, setPage] = useState(1);
+  const [page, setPage] = useState<number>(
+    Number(window.sessionStorage.getItem("qna_page")) || 1
+  );
 
   const handleNavigate = useCallback(
     (id: number) => {
+      window.sessionStorage.setItem("qna_page", JSON.stringify(page));
       navigate("/detail", {
         state: {
           id,
         },
       });
     },
-    [navigate]
+    [navigate, page]
   );
 
   const handleDelete = useCallback(
@@ -83,6 +86,7 @@ export const QnA = () => {
   }, []);
 
   const handlePage = useCallback((page: number) => {
+    window.sessionStorage.setItem("qna_page", JSON.stringify(page));
     setPage(page);
   }, []);
 
