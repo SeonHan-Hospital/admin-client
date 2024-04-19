@@ -11,7 +11,7 @@ export interface IPagination {
   itemsCountPerPage: number;
   totalItemsCount: number;
   pageRangeDisplayed: number;
-  onPageChange: (page: any) => void;
+  onPageChange: (page: number) => void;
 }
 
 export const PaginationContainer = ({

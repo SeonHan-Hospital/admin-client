@@ -20,6 +20,7 @@ export const QnA = () => {
   const [req, res] = useGetQuestionList();
   const [deleteReq, deleteRes] = useDeleteQuestion();
   const navigate = useNavigate();
+  const [page, setPage] = useState(1);
 
   const handleNavigate = useCallback(
     (id: number) => {
@@ -51,22 +52,21 @@ export const QnA = () => {
 
   useEffect(() => {
     req({
-      page: 1,
+      page: page - 1,
       limit: 10,
       author: "",
       content: "",
       subject: "",
     });
-  }, [req]);
+  }, [req, page]);
 
   useEffect(() => {
     if (res.called && res.data) {
-      res.data.rows.map((el: IQuestion) => {
+      res.data.rows.forEach((el: IQuestion) => {
         el.createdAt = dateHandler(el.createdAt);
         el.updatedAt = dateHandler(el.updatedAt);
-        return 0;
       });
-      setTableDatas(res.data.rows.slice(0, 10));
+      setTableDatas(res.data.rows);
       setTotalElement(res.data.count);
     }
   }, [res.called, res.data]);
@@ -80,6 +80,10 @@ export const QnA = () => {
 
   const handleSearchOption = useCallback((selected: IOption) => {
     setSearchOption(selected);
+  }, []);
+
+  const handlePage = useCallback((page: number) => {
+    setPage(page);
   }, []);
 
   return (
@@ -100,11 +104,11 @@ export const QnA = () => {
           number={0}
         />
         <PaginationContainer
-          activePage={1}
+          activePage={page}
           itemsCountPerPage={10}
           totalItemsCount={totalElement}
           pageRangeDisplayed={10}
-          onPageChange={(page) => {}}
+          onPageChange={handlePage}
         />
       </Wrapper>
     </Layout>

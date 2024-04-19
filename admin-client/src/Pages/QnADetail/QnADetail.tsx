@@ -28,6 +28,12 @@ const INITIAL_VALUE: IQuestion = {
 
 export const QnADetail = () => {
   const location = useLocation();
+  const sessionId = window.sessionStorage.getItem("question_id");
+  const id = location.state
+    ? location.state.id
+    : sessionId
+    ? JSON.parse(sessionId)
+    : null;
   const [questionDetail, setQuestionDetail] =
     useState<IQuestion>(INITIAL_VALUE);
   const [values, setValues] = useState<IQuestion>(INITIAL_VALUE);
@@ -61,11 +67,12 @@ export const QnADetail = () => {
   );
 
   useEffect(() => {
-    if (location.state) {
-      req(location.state.id);
-      answerReq(location.state.id);
+    if (id) {
+      req(id);
+      answerReq(id);
+      window.sessionStorage.setItem("question_id", JSON.stringify(id));
     }
-  }, [location, req, answerReq]);
+  }, [location, req, answerReq, id]);
 
   useEffect(() => {
     if (answerRes.called && answerRes.data) {
@@ -84,12 +91,12 @@ export const QnADetail = () => {
     // eslint-disable-next-line no-restricted-globals
     if (postAnswerActive && confirm("답변을 등록하시겠습니까?")) {
       postAnsReq({
-        questionId: location.state.id,
+        questionId: id,
         author: "master",
         content: ansDetailValue,
       });
     }
-  }, [postAnsReq, postAnswerActive, ansDetailValue, location]);
+  }, [postAnsReq, postAnswerActive, ansDetailValue, id]);
 
   useEffect(() => {
     if (postAnsRes.called && postAnsRes.data) {
@@ -133,15 +140,15 @@ export const QnADetail = () => {
 
   const handleQuestionModify = useCallback(() => {
     // eslint-disable-next-line no-restricted-globals
-    if (location.state && isActive && confirm("수정하시겠습니까?")) {
+    if (id && isActive && confirm("수정하시겠습니까?")) {
       questionModifyReq({
-        id: location.state.id,
+        id: id,
         subject: values.subject,
         author: values.author,
         content: values.content,
       });
     }
-  }, [questionModifyReq, values, location, isActive]);
+  }, [questionModifyReq, values, id, isActive]);
 
   useEffect(() => {
     if (questionModifyRes.called && questionModifyRes.data) {
