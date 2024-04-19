@@ -51,6 +51,9 @@ export const QnA = () => {
       alert("문의가 삭제되었습니다.");
       window.location.reload();
     }
+    if (deleteRes.error) {
+      alert(deleteRes.error);
+    }
   }, [deleteRes]);
 
   useEffect(() => {
@@ -72,7 +75,10 @@ export const QnA = () => {
       setTableDatas(res.data.rows);
       setTotalElement(res.data.count);
     }
-  }, [res.called, res.data]);
+    if (res.error) {
+      alert(res.error);
+    }
+  }, [res]);
 
   const handleSearchValue = useCallback(
     (e: React.ChangeEvent<HTMLInputElement>) => {

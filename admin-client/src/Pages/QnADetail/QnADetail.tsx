@@ -78,12 +78,18 @@ export const QnADetail = () => {
     if (answerRes.called && answerRes.data) {
       setMemoList(answerRes.data.data);
     }
+    if (answerRes.error) {
+      alert(answerRes.error);
+    }
   }, [answerRes]);
 
   useEffect(() => {
     if (res.called && res.data) {
       setQuestionDetail(res.data);
       setValues(res.data);
+    }
+    if (res.error) {
+      alert(res.error);
     }
   }, [res]);
 
@@ -103,6 +109,9 @@ export const QnADetail = () => {
       alert("답변이 등록되었습니다.");
       window.location.reload();
     }
+    if (postAnsRes.error) {
+      alert(postAnsRes.error);
+    }
   }, [postAnsRes]);
 
   const handleModifyAns = useCallback(
@@ -118,6 +127,9 @@ export const QnADetail = () => {
     if (modifyAnsRes.called && modifyAnsRes.data) {
       alert("수정이 완료되었습니다.");
       window.location.reload();
+    }
+    if (modifyAnsRes.error) {
+      alert(modifyAnsRes.error);
     }
   }, [modifyAnsRes]);
 
@@ -135,6 +147,9 @@ export const QnADetail = () => {
     if (deleteAnsRes.called && !deleteAnsRes.loading) {
       alert("삭제가 완료되었습니다.");
       window.location.reload();
+    }
+    if (deleteAnsRes.error) {
+      alert(deleteAnsRes.error);
     }
   }, [deleteAnsRes]);
 
@@ -154,6 +169,9 @@ export const QnADetail = () => {
     if (questionModifyRes.called && questionModifyRes.data) {
       alert("수정이 완료되었습니다.");
       window.location.reload();
+    }
+    if (questionModifyRes.error) {
+      alert(questionModifyRes.error);
     }
   }, [questionModifyRes]);
 
