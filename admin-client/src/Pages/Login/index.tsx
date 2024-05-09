@@ -31,6 +31,7 @@ export const Login = () => {
           type="password"
           value={password}
           onChange={setPassword}
+          handleEnter={handleLogin}
         />
         <LoginButton isActive={isActive} onClick={handleLogin}>
           로그인

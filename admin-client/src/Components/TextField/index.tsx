@@ -8,6 +8,7 @@ interface IProps {
   type?: string;
   error?: string;
   onChange: Dispatch<SetStateAction<string>>;
+  handleEnter?: () => void;
 }
 
 export const TextField = ({
@@ -16,6 +17,7 @@ export const TextField = ({
   type = "text",
   error,
   onChange = () => {},
+  handleEnter,
 }: IProps) => {
   const ref = useRef<HTMLInputElement>(null);
   return (
@@ -23,6 +25,11 @@ export const TextField = ({
       <InputBox
         value={value}
         onChange={(e) => onChange(e.target.value)}
+        onKeyDown={(e) => {
+          if (e.key === "Enter") {
+            handleEnter && handleEnter();
+          }
+        }}
         required
         type={type}
         ref={ref}
