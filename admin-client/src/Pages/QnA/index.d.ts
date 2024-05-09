@@ -9,6 +9,9 @@ export interface ISearchBarProps {
   onSelected: (selected: IOption) => void;
   searchValue: string;
   handleSearchValue: (e: React.ChangeEvent<HTMLInputElement>) => void;
+  handleSearch: () => void;
+  handleReset: () => void;
+  resetActive: boolean;
 }
 
 export interface IQuestion {

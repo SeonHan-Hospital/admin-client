@@ -9,6 +9,9 @@ export const SearchBox = ({
   onSelected,
   searchValue,
   handleSearchValue,
+  handleSearch,
+  handleReset,
+  resetActive,
 }: ISearchBarProps) => {
   return (
     <Wrapper>
@@ -24,8 +27,22 @@ export const SearchBox = ({
         placeholder="검색어를 입력하세요"
         value={searchValue}
         onChange={(e) => handleSearchValue(e)}
+        onKeyDown={(e) => {
+          if (e.key === "Enter") {
+            handleSearch();
+          }
+        }}
       />
-      <LoginButton isActive={!!searchValue}>검색</LoginButton>
+      <LoginButton isActive={!!searchValue} onClick={handleSearch}>
+        검색
+      </LoginButton>
+      <LoginButton
+        isActive={resetActive}
+        onClick={handleReset}
+        style={{ width: "48px", marginLeft: "10px" }}
+      >
+        초기화
+      </LoginButton>
     </Wrapper>
   );
 };

@@ -1,4 +1,4 @@
-import { useCallback, useEffect, useState } from "react";
+import { useCallback, useEffect, useMemo, useState } from "react";
 import { Layout } from "../../Components/Layout";
 import { SearchBox } from "./SearchBar";
 import { SearchBarDropDowns } from "./data";
@@ -22,6 +22,10 @@ export const QnA = () => {
   const navigate = useNavigate();
   const [page, setPage] = useState<number>(
     Number(window.sessionStorage.getItem("qna_page")) || 1
+  );
+  const resetActive = useMemo(
+    () => page !== 1 || searchValue.length > 0 || searchOption.id !== 0,
+    [page, searchOption.id, searchValue.length]
   );
 
   const handleNavigate = useCallback(
@@ -60,11 +64,25 @@ export const QnA = () => {
     req({
       page: page - 1,
       limit: 10,
-      author: "",
-      content: "",
-      subject: "",
+      author: searchOption.id === 2 ? searchValue : "",
+      content: searchOption.id === 1 ? searchValue : "",
+      subject: searchOption.id === 0 ? searchValue : "",
     });
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [req, page]);
+
+  const handleSearch = useCallback(() => {
+    if (searchValue) {
+      setPage(1);
+      req({
+        page: 0,
+        limit: 10,
+        author: searchOption.id === 2 ? searchValue : "",
+        content: searchOption.id === 1 ? searchValue : "",
+        subject: searchOption.id === 0 ? searchValue : "",
+      });
+    }
+  }, [req, searchOption.id, searchValue]);
 
   useEffect(() => {
     if (res.called && res.data) {
@@ -79,6 +97,21 @@ export const QnA = () => {
       alert(res.error);
     }
   }, [res]);
+
+  const handleReset = useCallback(() => {
+    if (resetActive) {
+      setSearchValue("");
+      setSearchOption(SearchBarDropDowns[0]);
+      setPage(1);
+      req({
+        page: 0,
+        limit: 10,
+        author: "",
+        content: "",
+        subject: "",
+      });
+    }
+  }, [req, resetActive]);
 
   const handleSearchValue = useCallback(
     (e: React.ChangeEvent<HTMLInputElement>) => {
@@ -100,10 +133,13 @@ export const QnA = () => {
     <Layout page="접수현황" category="QnA">
       <Wrapper>
         <SearchBox
+          resetActive={resetActive}
           searchValue={searchValue}
           handleSearchValue={handleSearchValue}
           onSelected={handleSearchOption}
           active={searchOption}
+          handleSearch={handleSearch}
+          handleReset={handleReset}
         />
         <Table
           handleDelete={handleDelete}
