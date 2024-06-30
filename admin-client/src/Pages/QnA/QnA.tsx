@@ -90,13 +90,18 @@ export const QnA = () => {
         el.createdAt = dateHandler(el.createdAt);
         el.updatedAt = dateHandler(el.updatedAt);
       });
-      setTableDatas(res.data.rows);
+      const rows = res.data.rows;
+      const arr = rows.map((el: IQuestion, index: number) => {
+        return { ...el, QnA_number: res.data.count - (page - 1) * 10 - index };
+      });
+      console.log(arr);
+      setTableDatas(arr);
       setTotalElement(res.data.count);
     }
     if (res.error) {
       alert(res.error);
     }
-  }, [res]);
+  }, [res, page]);
 
   const handleReset = useCallback(() => {
     if (resetActive) {

@@ -90,6 +90,7 @@ export const Table = ({
                             수정
                           </ButtonDetail>
                         ),
+                        id: item.QnA_number,
                       }[h.id] || item[h.id]
                     : totalElement - idx - size * number}
                 </Cell>

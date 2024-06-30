@@ -130,7 +130,7 @@ export const statusType = [
 
 export const header = [
   {
-    // id: 'id',
+    id: "id",
     minWidth: 50,
     title: "No",
     wrapWidth: 1,
