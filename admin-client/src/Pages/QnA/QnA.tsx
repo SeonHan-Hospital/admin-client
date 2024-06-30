@@ -94,7 +94,6 @@ export const QnA = () => {
       const arr = rows.map((el: IQuestion, index: number) => {
         return { ...el, QnA_number: res.data.count - (page - 1) * 10 - index };
       });
-      console.log(arr);
       setTableDatas(arr);
       setTotalElement(res.data.count);
     }
